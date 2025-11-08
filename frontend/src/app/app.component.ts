@@ -41,7 +41,7 @@ import { BeneficioListComponent } from './components/beneficio-list/beneficio-li
       }
     `,
   ],
-  standalone: true, // ← ADICIONE
+  standalone: true,
   imports: [BeneficioListComponent],
 })
 export class AppComponent {

@@ -7,8 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-beneficio-list',
-  standalone: true, // ← ADICIONE ESTA LINHA
-  imports: [CommonModule, FormsModule, HttpClientModule], // ← ADICIONE ESTAS IMPORTAÇÕES
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './beneficio-list.component.html',
   styleUrls: ['./beneficio-list.component.css'],
 })
