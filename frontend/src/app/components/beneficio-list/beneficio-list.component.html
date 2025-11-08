@@ -1,0 +1,305 @@
+<div class="container mt-4">
+  <h2 class="mb-4"><i class="fas fa-gift me-2"></i>Sistema de Gerenciamento de Benefícios</h2>
+
+  <!-- Card de Valor Total -->
+  <div class="card bg-primary text-white mb-4">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="fas fa-chart-pie me-2"></i>Valor Total dos Benefícios Ativos
+      </h5>
+      <h2 class="card-text">R$ {{ valorTotal | number : '1.2-2' }}</h2>
+    </div>
+  </div>
+
+  <!-- Alertas -->
+  <div *ngIf="mensagem" class="alert alert-success alert-dismissible fade show">
+    {{ mensagem }}
+    <button type="button" class="btn-close" (click)="mensagem = ''"></button>
+  </div>
+
+  <div *ngIf="erro" class="alert alert-danger alert-dismissible fade show">
+    {{ erro }}
+    <button type="button" class="btn-close" (click)="erro = ''"></button>
+  </div>
+
+  <!-- Formulário de Criação -->
+  <div class="card mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Novo Benefício</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="criarBeneficio()" #beneficioForm="ngForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Nome *</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="novoBeneficio.nome"
+              name="nome"
+              required
+              #nome="ngModel"
+            />
+            <div *ngIf="nome.invalid && nome.touched" class="text-danger">Nome é obrigatório</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Valor *</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="novoBeneficio.valor"
+              name="valor"
+              step="0.01"
+              min="0"
+              required
+              #valor="ngModel"
+            />
+            <div *ngIf="valor.invalid && valor.touched" class="text-danger">
+              Valor é obrigatório
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select class="form-control" [(ngModel)]="novoBeneficio.ativo" name="ativo">
+              <option [ngValue]="true">Ativo</option>
+              <option [ngValue]="false">Inativo</option>
+            </select>
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100" [disabled]="beneficioForm.invalid">
+              <i class="fas fa-save me-1"></i>Criar
+            </button>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <label class="form-label">Descrição</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="novoBeneficio.descricao"
+              name="descricao"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Transferência entre Benefícios -->
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Transferência entre Benefícios</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="realizarTransferencia()" #transferenciaForm="ngForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">De *</label>
+            <select
+              class="form-control"
+              [(ngModel)]="transferencia.fromId"
+              name="fromId"
+              required
+              #fromId="ngModel"
+            >
+              <option value="">Selecione o benefício origem</option>
+              <option *ngFor="let b of getBeneficiosAtivos()" [value]="b.id">
+                {{ b.nome }} (R$ {{ b.valor | number : '1.2-2' }})
+              </option>
+            </select>
+            <div *ngIf="fromId.invalid && fromId.touched" class="text-danger">
+              Selecione o benefício origem
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Para *</label>
+            <select
+              class="form-control"
+              [(ngModel)]="transferencia.toId"
+              name="toId"
+              required
+              #toId="ngModel"
+            >
+              <option value="">Selecione o benefício destino</option>
+              <option *ngFor="let b of getBeneficiosAtivos()" [value]="b.id">
+                {{ b.nome }} (R$ {{ b.valor | number : '1.2-2' }})
+              </option>
+            </select>
+            <div *ngIf="toId.invalid && toId.touched" class="text-danger">
+              Selecione o benefício destino
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Valor *</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="transferencia.amount"
+              name="amount"
+              step="0.01"
+              min="0.01"
+              required
+              #amount="ngModel"
+            />
+            <div *ngIf="amount.invalid && amount.touched" class="text-danger">
+              Valor deve ser positivo
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-end">
+            <button
+              type="submit"
+              class="btn btn-primary w-100"
+              [disabled]="transferenciaForm.invalid"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Benefícios -->
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">
+        <i class="fas fa-list me-2"></i>Lista de Benefícios ({{ beneficios.length }})
+      </h5>
+    </div>
+    <div class="card-body">
+      <!-- Loading -->
+      <div *ngIf="carregando" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2">Carregando benefícios...</p>
+      </div>
+
+      <!-- Lista Vazia -->
+      <div *ngIf="!carregando && beneficios.length === 0" class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>Nenhum benefício cadastrado.
+      </div>
+
+      <!-- Tabela de Benefícios -->
+      <div *ngIf="!carregando && beneficios.length > 0" class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Versão</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let beneficio of beneficios">
+              <!-- Modo Visualização -->
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">{{ beneficio.id }}</td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">
+                <strong>{{ beneficio.nome }}</strong>
+              </td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">{{ beneficio.descricao }}</td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">
+                <span class="fw-bold text-success"
+                  >R$ {{ beneficio.valor | number : '1.2-2' }}</span
+                >
+              </td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">
+                <span [class]="beneficio.ativo ? 'badge bg-success' : 'badge bg-secondary'">
+                  {{ beneficio.ativo ? 'Ativo' : 'Inativo' }}
+                </span>
+              </td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">
+                <span class="badge bg-info">{{ beneficio.version }}</span>
+              </td>
+              <td *ngIf="beneficioEditando?.id !== beneficio.id">
+                <div class="btn-group btn-group-sm">
+                  <button
+                    class="btn btn-warning"
+                    (click)="editarBeneficio(beneficio)"
+                    title="Editar"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    (click)="deletarBeneficio(beneficio.id!)"
+                    title="Deletar"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+
+              <!-- Modo Edição -->
+              <td *ngIf="beneficioEditando?.id === beneficio.id" colspan="7">
+                <form (ngSubmit)="salvarEdicao()" class="row g-3 align-items-center">
+                  <div class="col-md-2">
+                    <strong>{{ beneficio.id }}</strong>
+                  </div>
+                  <div class="col-md-2">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="beneficioEditando!.nome"
+                      name="nomeEdit"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-2">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="beneficioEditando!.descricao"
+                      name="descricaoEdit"
+                    />
+                  </div>
+                  <div class="col-md-2">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="beneficioEditando!.valor"
+                      name="valorEdit"
+                      step="0.01"
+                      min="0"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-1">
+                    <select
+                      class="form-control form-control-sm"
+                      [(ngModel)]="beneficioEditando!.ativo"
+                      name="ativoEdit"
+                    >
+                      <option [ngValue]="true">Ativo</option>
+                      <option [ngValue]="false">Inativo</option>
+                    </select>
+                  </div>
+                  <div class="col-md-1">
+                    <span class="badge bg-info">{{ beneficioEditando!.version }}</span>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="submit" class="btn btn-success btn-sm me-1">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      (click)="cancelarEdicao()"
+                    >
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

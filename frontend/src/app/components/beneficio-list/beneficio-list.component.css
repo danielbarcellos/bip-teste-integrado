@@ -1,0 +1,12 @@
+.table-responsive {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.btn-group-sm > .btn {
+  padding: 0.25rem 0.5rem;
+}
+
+.card-header {
+  font-weight: 600;
+}
