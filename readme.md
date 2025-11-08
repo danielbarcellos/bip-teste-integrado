@@ -1,48 +1,38 @@
 # 🎯 Sistema de Gerenciamento de Benefícios
 
-<div align="center">
+Solução completa full-stack para gerenciamento de benefícios corporativos com transferências seguras entre contas.
 
-![Java](https://img.shields.io/badge/Java-17-%23ED8B00?style=for-the-badge&logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-%236DB33F?style=for-the-badge&logo=springboot)
-![Angular](https://img.shields.io/badge/Angular-17-%23DD0031?style=for-the-badge&logo=angular)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-%23336791?style=for-the-badge&logo=postgresql)
-![Docker](https://img.shields.io/badge/Docker-%230db7ed?style=for-the-badge&logo=docker)
+## ✨ Funcionalidades
 
-*Uma solução completa full-stack com arquitetura em camadas e transferências seguras*
+- ✅ **CRUD Completo** - Criar, listar, editar e deletar benefícios
+- 🔒 **Transferências Seguras** - Locking otimista e validações
+- 🎨 **Interface Moderna** - Angular com Bootstrap
+- 🧪 **Testes Automatizados** - Cobertura completa
+- 📊 **API Documentada** - Swagger/OpenAPI
+- 🐋 **Containerizada** - Docker para banco de dados
 
-</div>
+## 🛠️ Tecnologias
 
-## 📖 Índice
+### Backend
+- Java 17
+- Spring Boot 3.2.0
+- Spring Data JPA
+- PostgreSQL
+- JUnit 5 + Mockito
 
-- [🎯 Visão Geral](#-visão-geral)
-- [🚀 Funcionalidades](#-funcionalidades)
-- [🏗️ Arquitetura](#️-arquitetura)
-- [🛠️ Tecnologias](#️-tecnologias)
-- [📦 Instalação](#-instalação)
-- [💡 Como Usar](#-como-usar)
-- [🧪 Testes](#-testes)
-- [🐛 Correções Implementadas](#-correções-implementadas)
-- [🔧 API Reference](#-api-reference)
-- [👨‍💻 Desenvolvedor](#-desenvolvedor)
+### Frontend
+- Angular 17
+- TypeScript
+- Bootstrap 5
+- Font Awesome
 
-## 🎯 Visão Geral
+### Infraestrutura
+- Docker
+- Docker Compose
+- Maven
 
-> **💡 Sistema corporativo** para gerenciamento de benefícios com **transferências seguras** entre contas, implementando **locking otimista** e **validações robustas** para garantir a consistência dos dados em ambiente concorrente.
+## 🚀 Como Executar
 
-### 🎪 Demonstração
-
-| 🔄 Transferência Segura | 📱 Interface Responsiva |
-|:----------------------:|:----------------------:|
-| ![Transferência](https://via.placeholder.com/400x200/4A90E2/FFFFFF?text=Transferência+Segura+%F0%9F%94%92) | ![Interface](https://via.placeholder.com/400x200/50E3C2/FFFFFF?text=Interface+Moderno+%F0%9F%8E%A8) |
-
-## 🚀 Funcionalidades
-
-### ✅ **CRUD Completo de Benefícios**
-```typescript
-// Exemplo: Criar benefício
-const novoBeneficio = {
-  nome: "Vale Alimentação",
-  descricao: "Benefício para refeições",
-  valor: 1000.00,
-  ativo: true
-};
+### 1. Banco de Dados
+```bash
+docker-compose up -d
