@@ -22,6 +22,7 @@ Solução completa full-stack para gerenciamento de benefícios corporativos com
 ```bash
  cd backend
 ./mvnw spring-boot:run
+```
 
 API: http://localhost:8080/api
 http://localhost:8000/api/swagger-ui/index.html
@@ -36,7 +37,7 @@ http://localhost:8000/api/swagger-ui/index.html
 cd frontend
 npm install
 ng serve
-
+```
 App: http://localhost:4200
 
 ### Infraestrutura
@@ -49,3 +50,4 @@ App: http://localhost:4200
 ### 1. Banco de Dados
 ```bash
 docker-compose up -d
+```
