@@ -20,11 +20,23 @@ Solução completa full-stack para gerenciamento de benefícios corporativos com
 - PostgreSQL
 - JUnit 5 + Mockito
 
+ cd backend
+./mvnw spring-boot:run
+
+API: http://localhost:8080/api
+http://localhost:8000/api/swagger-ui/index.html
+
 ### Frontend
 - Angular 17
 - TypeScript
 - Bootstrap 5
 - Font Awesome
+
+cd frontend
+npm install
+ng serve
+
+App: http://localhost:4200
 
 ### Infraestrutura
 - Docker
