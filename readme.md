@@ -19,7 +19,7 @@ Solução completa full-stack para gerenciamento de benefícios corporativos com
 - Spring Data JPA
 - PostgreSQL
 - JUnit 5 + Mockito
-
+```bash
  cd backend
 ./mvnw spring-boot:run
 
@@ -32,6 +32,7 @@ http://localhost:8000/api/swagger-ui/index.html
 - Bootstrap 5
 - Font Awesome
 
+```bash
 cd frontend
 npm install
 ng serve
